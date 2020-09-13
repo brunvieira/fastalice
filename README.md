@@ -77,8 +77,8 @@ func fastHTTPHandler(ctx *fasthttp.RequestCtx) {
 }
 
 func main() {
-    chained := fastalice.New(fastcsrf.CSRF, fasthttplogger.CombinedColored)
-    fasthttp.ListenAndServe(":8081", chained)
+    chained := fastalice.New(fastcsrf.CSRF, fasthttplogger.CombinedColored).Then(fastHTTPHandler)
+    fasthttp.ListenAndServe(":8080", chained)
 }
 ```
 
