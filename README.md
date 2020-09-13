@@ -1,8 +1,8 @@
 # Fast Alice
 
 [![GoDoc](https://godoc.org/github.com/golang/gddo?status.svg)](http://godoc.org/github.com/brunvieira/fastalice)
-[![Build Status](https://travis-ci.org/brunvieira/fast-alice.svg?branch=master)](https://travis-ci.org/brunvieira/fastalice)
-[![Coverage](http://gocover.io/_badge/github.com/brunvieira/fast-alice)](http://gocover.io/github.com/brunvieira/fastalice)
+[![Build Status](https://travis-ci.org/brunvieira/fastalice.svg?branch=master)](https://travis-ci.org/brunvieira/fastalice)
+[![Coverage](http://gocover.io/_badge/github.com/brunvieira/fastalice)](http://gocover.io/github.com/brunvieira/fastalice)
 
 Fast Alice is a port of [alice](https://github.com/justinas/alice) for [fasthttp]("github.com/valyala/fasthttp").
 Fast Alice provides a convenient way to chain
