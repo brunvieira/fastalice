@@ -3,8 +3,6 @@ package alice
 
 import (
 	"fmt"
-	"github.com/AubSs/fasthttplogger"
-	"github.com/brunvieira/fastcsrf"
 	"io"
 	"io/ioutil"
 	"net"
@@ -178,23 +176,4 @@ func TestDefaultHandler(t *testing.T) {
 	body, err := ioutil.ReadAll(resp.Body)
 	assert.Nil(t, err, "Reading the body response should not return an error")
 	assert.Equal(t, Default404Message, string(body), "Request response should return the Default404Message")
-}
-
-func TestThirdPartyMiddlewares(t *testing.T) {
-	chained := New(fasthttplogger.CombinedColored, fastcsrf.CSRF).Then(testApp)
-
-	ln := startServerOnPort(t, 8085, chained)
-	defer ln.Close()
-
-	req, err := http.NewRequest("GET", "http://localhost:8085", nil)
-	assert.Nil(t, err, "Should be able to create a  Request")
-
-	resp, err := http.DefaultClient.Do(req)
-	assert.Nil(t, err, "Sending the request must not return an error")
-	assert.NotNil(t, resp, "Request response must not be nil")
-	assert.Equal(t, fasthttp.StatusOK, resp.StatusCode, "Request response should return a Not Found status")
-
-	body, err := ioutil.ReadAll(resp.Body)
-	assert.Nil(t, err, "Reading the body response should not return an error")
-	assert.Equal(t, "app", string(body), "Request response should return the correct output")
 }
