@@ -4,7 +4,7 @@
 [![Build Status](https://travis-ci.org/brunvieira/fast-alice.svg?branch=master)](https://travis-ci.org/brunvieira/fast-alice)
 [![Coverage](http://gocover.io/_badge/github.com/brunvieira/fast-alice)](http://gocover.io/github.com/brunvieira/fast-alice)
 
-Fast Alice is a port of [alice](https://github.com/justinas/alice) for fasthttp.
+Fast Alice is a port of [alice](https://github.com/justinas/alice) for [fasthttp]("github.com/valyala/fasthttp").
 Fast Alice provides a convenient way to chain
 your Fast HTTP middleware functions and the app handler.
 
@@ -35,6 +35,8 @@ for explanation how Alice is different from other chaining solutions.
 Your middleware constructors should have the form of
 
 ```go
+package main 
+
 func (fasthttp.RequestHandler) fasthttp.RequestHandler
 ```
 
@@ -42,54 +44,55 @@ Some middleware provide this out of the box.
 For ones that don't, it's trivial to write one yourself.
 
 ```go
-func myStripPrefix(h http.Handler) http.Handler {
-    return http.StripPrefix("/old", h)
+package main 
+
+func myLog(req fasthttp.RequestHandler) fasthttp.RequestHandler {
+    return fasthttp.RequestHandler(func(ctx *fasthttp.RequestCtx) {
+    		log.Printf("%s %s - %v",
+    			ctx.Method(),
+    			ctx.RequestURI(),
+    			ctx.Response.Header.StatusCode(),
+    		)
+    	})
 }
 ```
 
-This complete example shows the full power of Alice.
+This complete example shows the full power of Fast Alice.
 
 ```go
 package main
 
 import (
-    "net/http"
-    "time"
+    "fmt"
 
-    "github.com/throttled/throttled"
-    "github.com/justinas/alice"
-    "github.com/justinas/nosurf"
+    "github.com/AubSs/fasthttplogger"
+    "github.com/brunvieira/fast-alice"
+    "github.com/brunvieira/fastcsrf"
+    "github.com/valyala/fasthttp"
 )
 
-func timeoutHandler(h http.Handler) http.Handler {
-    return http.TimeoutHandler(h, 1*time.Second, "timed out")
-}
 
-func myApp(w http.ResponseWriter, r *http.Request) {
-    w.Write([]byte("Hello world!"))
+func fastHTTPHandler(ctx *fasthttp.RequestCtx) {
+	fmt.Fprintf(ctx, "Hi there! RequestURI is %q", ctx.RequestURI())
 }
 
 func main() {
-    th := throttled.Interval(throttled.PerSec(10), 1, &throttled.VaryBy{Path: true}, 50)
-    myHandler := http.HandlerFunc(myApp)
-
-    chain := alice.New(th.Throttle, timeoutHandler, nosurf.NewPure).Then(myHandler)
-    http.ListenAndServe(":8000", chain)
+    chained := fastalice.New(fastcsrf.CSRF, fasthttplogger.CombinedColored)
+    fasthttp.ListenAndServe(":8081", chained)
 }
 ```
 
-Here, the request will pass [throttled](https://github.com/PuerkitoBio/throttled) first,
-then an http.TimeoutHandler we've set up,
-then [nosurf](https://github.com/justinas/nosurf)
+Here, the request will pass [fastcsrf](github.com/brunvieira/fastcsrf) first,
+then [fasthttplogger](github.com/AubSs/fasthttplogger)
 and will finally reach our handler.
 
-Note that Alice makes **no guarantees** for
+Note that Fast Alice, as Alice, makes **no guarantees** for
 how one or another piece of  middleware will behave.
 Once it passes the execution to the outer layer of middleware,
 it has no saying in whether middleware will execute the inner handlers.
 This is intentional behavior.
 
-Alice works with Go 1.0 and higher.
+Fast Alice works with Go 1.0 and higher.
 
 ### Contributing
 
