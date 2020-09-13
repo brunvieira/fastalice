@@ -13,9 +13,9 @@ type Constructor func(fasthttp.RequestHandler) fasthttp.RequestHandler
 // Default404Message - The message for 404 error (Not Found)
 const Default404Message = "404 not found"
 
-// DefaulFastHTTPMux is a replacement for default server mux
+// DefaultFastHTTPMux is a replacement for default server mux
 // Outputs a 404 error
-var DefaulFastHTTPMux = fasthttp.RequestHandler(func(ctx *fasthttp.RequestCtx) {
+var DefaultFastHTTPMux = fasthttp.RequestHandler(func(ctx *fasthttp.RequestCtx) {
 	ctx.SetStatusCode(fasthttp.StatusNotFound)
 	ctx.WriteString(Default404Message)
 })
@@ -56,7 +56,7 @@ func New(constructors ...Constructor) Chain {
 // Then() addesses nil by returning the defaultFastHTTPMux
 func (c Chain) Then(h fasthttp.RequestHandler) fasthttp.RequestHandler {
 	if h == nil {
-		return DefaulFastHTTPMux
+		return DefaultFastHTTPMux
 	}
 
 	for i := range c.constructors {
