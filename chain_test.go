@@ -1,5 +1,5 @@
 // Package alice implements a middleware chaining solution.
-package alice
+package fastalice
 
 import (
 	"fmt"

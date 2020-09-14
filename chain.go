@@ -1,5 +1,5 @@
 // Package alice provides a convenient way to chain http handlers.
-package alice
+package fastalice
 
 import (
 	"github.com/valyala/fasthttp"
