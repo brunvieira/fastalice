@@ -1,4 +1,4 @@
-module github.com/brunvieira/fast-alice
+module github.com/brunvieira/fastalice
 
 go 1.12
 
